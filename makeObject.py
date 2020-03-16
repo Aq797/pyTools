@@ -7,6 +7,31 @@ string_list     =   []
 
 table_name = input("[*] Enter table name : ")
 
+def java_obj():
+    filename    =   table_name+".java"
+    f = open(filename,"w+")
+    f.write("public class %s \n { \n"%(table_name))
+    for i in range(len(int_list)):
+        f.write("private int    %s ;\n"%(int_list[i]))
+    for i in range(len(decimal_list)):
+        f.write("private double %s ;\n"%(decimal_list[i]))
+    for i in range(len(string_list)):
+        f.write("private String %s ;\n"%(string_list[i]))
+    for j in range(len(int_list)):
+        each = int_list[j]
+        f.write("public int f_%s (char p_Type,int p_Value) \n {\n"%(each))
+        f.write(" return (p_Type=='G') ? %s :   %s = p_Value ; \n } \n "%(each,each))
+    for j in range(len(decimal_list)):
+        each = decimal_list[j]
+        f.write("public double f_%s (char p_Type,double p_Value) \n { \n"%(each))
+        f.write(" return (p_Type=='G') ? %s : %s = p_Value; \n } \n"%(each,each))
+    for j in range(len(string_list)):
+        each = string_list[j]
+        f.write("public String f_%s (char p_Type,String p_Value) \n { \n "%(each))
+        f.write(" return (p_Type=='G') ? %s :   %s = p_Value ; \n } \n"%(each,each))
+    f.write("\n}\n")
+    f.close()
+
 
 def kotlin_obj():
     filename = table_name+".kt"
@@ -40,7 +65,7 @@ try:
     cursor.execute(sql_query)
     records =   cursor.fetchall()
     print("==>Total number of rows :",cursor.rowcount)
-    print("==>Creating objeect...")
+    print("==>Creating object...")
     for row   in  records:
         row_val = str(row[0])
         each = str(row[1])
@@ -50,7 +75,14 @@ try:
             decimal_list.append(row_val)
         else:
             string_list.append(row_val)
-    kotlin_obj()
+    choice = int(input("[*] Enter '1' for java object or '2' for kotlin object : "))
+    if choice == 1:
+        java_obj()
+    elif choice == 2:
+        kotlin_obj()
+    else:
+        print("***Wrong Input! Please try again***")
+        print("==> Closing application...\n BYE")
 except:
     print("Error")
 finally:
